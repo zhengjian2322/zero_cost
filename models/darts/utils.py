@@ -119,6 +119,7 @@ def create_exp_dir(path, scripts_to_save=None):
             dst_file = os.path.join(path, 'scripts', os.path.basename(script))
             shutil.copyfile(script, dst_file)
 
+
 def config_to_genotype(config, blocks_in_cell=4):
     from collections import namedtuple
     Genotype = namedtuple('Genotype', 'normal normal_concat reduce reduce_concat')

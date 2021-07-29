@@ -136,6 +136,7 @@ def train():
                 f"Validation Results - Epoch: {engine.state.epoch} Avg accuracy: {round(avg_accuracy * 100, 2)}% Val loss: {round(avg_loss, 2)} Train loss: {round(engine.state.output, 2)}")
 
             measures = {}
+            # evaluate the zero_cost measures each epoch
             if args.log_measures:
                 measures = predictive.find_measures(net,
                                                     train_loader,

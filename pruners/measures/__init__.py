@@ -40,6 +40,7 @@ def measure(name, bn=True, copy_net=True, force_clean=True, **impl_args):
         available_measures.append(name)
         _measure_impls[name] = measure_impl
         return func
+
     return make_impl
 
 

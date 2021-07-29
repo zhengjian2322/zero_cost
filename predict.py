@@ -49,7 +49,6 @@ def parse_arguments():
     parser.add_argument('--train_history_file_name', default='result/darts_train_cf10_r8_c16_e40_bz128.p',
                         help='train history file name')
 
-
     args = parser.parse_args()
     args.device = torch.device("cuda:" + str(args.gpu) if torch.cuda.is_available() else "cpu")
     return args
@@ -57,6 +56,7 @@ def parse_arguments():
 
 def get_num_classes(dataset_name):
     return 100 if dataset_name == 'cifar100' else 10 if dataset_name == 'cifar10' else 120
+
 
 def load_arch(file_name):
     train_history = {}
@@ -73,7 +73,7 @@ def load_arch(file_name):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    file_name =  args.train_history_file_name
+    file_name = args.train_history_file_name
 
     num_class = get_num_classes(args.dataset)
     train_history = load_arch(file_name)

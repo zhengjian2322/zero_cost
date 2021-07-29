@@ -14,7 +14,7 @@ all_metrics = {}
 all_runs = {}
 metric_names = ['grad_norm', 'snip', 'grasp', 'fisher', 'synflow', 'jacob_cov']
 
-for fname, rname in [('result/darts_cf10_seed42_dlrandom_dlinfo1_initwnone_initbnone.p', 'CIFAR10')
+for fname, rname in [('result/nb2_cf10_seed42_dlrandom_dlinfo1_initwnone_initbnone.p', 'CIFAR10')
                      ]:
     i = 0
     runs = []
@@ -40,9 +40,13 @@ for fname, rname in [('result/darts_cf10_seed42_dlrandom_dlinfo1_initwnone_initb
         t = PrettyTable(hl)
 
     for r in runs:
+        # run nb2_cf10_seed42_dlrandom_dlinfo1_initwnone_initbnone.p
+        # for k, v in r['logmeasures'].items():
         for k, v in r['log_measures'].items():
             if k in metrics:
                 metrics[k].append(v)
+        # run nb2_cf10_seed42_dlrandom_dlinfo1_initwnone_initbnone.p
+        # acc.append(r['valacc'])
         acc.append(r['val_acc'])
 
     all_ds[fname]['metrics'] = metrics

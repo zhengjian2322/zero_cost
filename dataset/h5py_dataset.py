@@ -17,9 +17,9 @@ import h5py
 import numpy as np
 from PIL import Image
 
-
 import torch
 from torch.utils.data import Dataset, DataLoader
+
 
 class H5Dataset(Dataset):
     def __init__(self, h5_path, transform=None):
@@ -30,8 +30,8 @@ class H5Dataset(Dataset):
 
     def __getitem__(self, index):
 
-        #loading in getitem allows us to use multiple processes for data loading
-        #because hdf5 files aren't pickelable so can't transfer them across processes
+        # loading in getitem allows us to use multiple processes for data loading
+        # because hdf5 files aren't pickelable so can't transfer them across processes
         # https://discuss.pytorch.org/t/hdf5-a-data-format-for-pytorch/40379
         # https://discuss.pytorch.org/t/dataloader-when-num-worker-0-there-is-bug/25643/16
         # TODO possible look at __getstate__ and __setstate__ as a more elegant solution
@@ -49,7 +49,7 @@ class H5Dataset(Dataset):
         y = record['target'][()]
         y = torch.from_numpy(np.asarray(y))
 
-        return (x,y)
+        return (x, y)
 
     def __len__(self):
         return self.length

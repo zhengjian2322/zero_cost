@@ -46,14 +46,15 @@ def get_darts_config_space(blocks_in_cell=4):
         cs.add_hyperparameter(reduce_connection_hp)
     return cs
 
-def check_benchmark201_config(archs, config):
 
+def check_benchmark201_config(archs, config):
     arch = '|%s~0|+|%s~0|%s~1|+|%s~0|%s~1|%s~2|' % (config['op_0'],
                                                     config['op_1'], config['op_2'],
                                                     config['op_3'], config['op_4'], config['op_5'])
     if arch in archs:
         return True
     return False
+
 
 def get_benchmark201_config_space(operation=6):
     cs = ConfigurationSpace()
