@@ -1,5 +1,6 @@
 from models import nasbench2
 from models.darts.model import DartsNetworkCIFAR
+from models.nb_asr.model import ASRModel
 
 
 def config_to_genotype(config, blocks_in_cell=4):
@@ -20,7 +21,7 @@ def config_to_genotype(config, blocks_in_cell=4):
     return Genotype(normal=normal, normal_concat=normal_concat, reduce=reduce, reduce_concat=reduce_concat)
 
 
-def get_net_from_config(net_name, config, n_class, init_channels=16):
+def get_net_from_config(net_name, config, n_class, init_channels=16,dropout_rate=0.2):
     if net_name == 'benchmark201':
         config = '|%s~0|+|%s~0|%s~1|+|%s~0|%s~1|%s~2|' % (config['op_0'],
                                                           config['op_1'], config['op_2'],
@@ -31,6 +32,15 @@ def get_net_from_config(net_name, config, n_class, init_channels=16):
         net = DartsNetworkCIFAR(C=init_channels, num_classes=n_class,
                                 layers=20, auxiliary=False, genotype=genotype)
         net.drop_path_prob = 0
+    elif net_name == 'ASR':
+        config_ = []
+        node_num = 4
+
+        for main_edge_id in range(1, node_num):
+            edge2node = [config['main_edge_%d' % main_edge_id]]
+            for skip_edge_id in range(main_edge_id):
+                edge2node.append(config['main_edge_%d_%d' % (main_edge_id, skip_edge_id)])
+        net = ASRModel(config_, use_rnn=True, dropout_rate=dropout_rate)
     else:
         raise ValueError('%s is not supported' % net_name)
     return net

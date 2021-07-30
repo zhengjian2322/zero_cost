@@ -21,7 +21,7 @@ from models import *
 from pruners import predictive
 from dataset.weight_initializers import init_net
 
-from dataset.dataset import get_cifar_dataloaders
+from dataset.dataset import get_dataloaders
 from utils import get_net_from_config
 
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    train_loader, val_loader = get_cifar_dataloaders(args.batch_size, args.batch_size, args.dataset,
+    train_loader, val_loader = get_dataloaders(args.batch_size, args.batch_size, args.dataset,
                                                      args.num_data_workers)
 
     cached_res = []

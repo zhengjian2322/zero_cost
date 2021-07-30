@@ -21,6 +21,19 @@ benchmark201_choices = [
     'nor_conv_3x3',
     'avg_pool_3x3'
 ]
+ASR_main_edge_choices = [
+    'linear',
+    'conv5',
+    'conv5d2',
+    'conv7',
+    'conv7d2',
+    'zero'
+]
+
+ASR_skip_edge_choices = [
+    'Zero',  # branch not present
+    'Identity'  # branch present
+]
 
 
 def get_darts_config_space(blocks_in_cell=4):
@@ -62,4 +75,19 @@ def get_benchmark201_config_space(operation=6):
         cs.add_hyperparameter(
             CategoricalHyperparameter('op_%d' % i, choices=benchmark201_choices, default_value=benchmark201_choices[1]))
 
+    return cs
+
+
+def get_benchmarkASR_config_space(node_num=4):
+    cs = ConfigurationSpace()
+
+    # first node not have any edge
+    for main_edge_id in range(1, node_num):
+        cs.add_hyperparameter(
+            CategoricalHyperparameter('main_edge_%d' % main_edge_id, choices=ASR_main_edge_choices,
+                                      default_value=ASR_main_edge_choices[0]))
+        for skip_edge_id in range(main_edge_id):
+            cs.add_hyperparameter(CategoricalHyperparameter('main_edge_%d_%d' % (main_edge_id, skip_edge_id),
+                                      choices=range(len(ASR_skip_edge_choices)),
+                                      default_value=0))
     return cs

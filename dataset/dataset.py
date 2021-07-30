@@ -15,13 +15,19 @@
 
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST, CIFAR10, CIFAR100, SVHN
-from torchvision.transforms import Compose, ToTensor, Normalize
+from torchvision.transforms import Compose
 from torchvision import transforms
 
 from .imagenet16 import *
+from .timit.timit import get_ASR_dataloaders
 
 
-def get_cifar_dataloaders(train_batch_size, test_batch_size, dataset, num_workers, resize=None, datadir='dataset'):
+def get_dataloaders(train_batch_size, test_batch_size, dataset, num_workers, resize=None, datadir='dataset'):
+    if dataset == "TIMIT":
+        dataloaders = get_ASR_dataloaders('timit_dataset', batch_size=train_batch_size)
+        # TODO:get a available data_loader
+        return dataloaders
+
     if 'ImageNet16' in dataset:
         mean = [x / 255 for x in [122.68, 116.66, 104.01]]
         std = [x / 255 for x in [63.22, 61.26, 65.09]]

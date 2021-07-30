@@ -25,8 +25,8 @@ from ignite.engine import Events, create_supervised_trainer, create_supervised_e
 from ignite.metrics import Accuracy, Loss
 from ignite.contrib.handlers import ProgressBar
 
-from config_space import get_benchmark201_config_space, get_darts_config_space
-from dataset.dataset import get_cifar_dataloaders
+from config_space import get_benchmark201_config_space, get_darts_config_space, get_benchmarkASR_config_space
+from dataset.dataset import get_dataloaders
 from pruners import predictive
 from utils import get_net_from_config
 
@@ -70,7 +70,7 @@ def setup_experiment(net, args):
         nesterov=True)
     lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=0, last_epoch=-1)
 
-    train_loader, val_loader = get_cifar_dataloaders(args.batch_size, args.batch_size, args.dataset,
+    train_loader, val_loader = get_dataloaders(args.batch_size, args.batch_size, args.dataset,
                                                      args.num_data_workers, resize=args.img_size)
 
     return optimizer, lr_scheduler, train_loader, val_loader
@@ -81,6 +81,8 @@ def load_arch_config_space(arch_name='benchmark201'):
         return get_benchmark201_config_space()
     elif arch_name == 'darts':
         return get_darts_config_space()
+    elif arch_name == 'ASR':
+        return get_benchmarkASR_config_space()
     else:
         raise ValueError('%s is not supported' % arch_name)
 
