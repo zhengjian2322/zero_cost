@@ -17,16 +17,22 @@ import torch
 import torch.nn as nn
 
 
-def get_some_data(train_dataloader, num_batches, device):
+def get_some_data(train_dataloader, num_batches, device, dataset='cifar10'):
     traindata = []
     dataloader_iter = iter(train_dataloader)
     for _ in range(num_batches):
         traindata.append(next(dataloader_iter))
-    inputs = torch.cat([a for a, _ in traindata])
-    targets = torch.cat([b for _, b in traindata])
-    inputs = inputs.to(device)
-    targets = targets.to(device)
-    return inputs, targets
+    if dataset == 'timit':
+        inputs, inputs_len = torch.cat([a[0][0] for a in traindata]), torch.cat([ a[0][1] for a in traindata])
+
+        targets, targets_len = torch.cat([b[1][0] for b in traindata]), torch.cat([b[1][1] for b in traindata])
+        return inputs.to(device), targets.to(device), inputs_len.to(device), targets_len.to(device)
+    else:
+        inputs = torch.cat([a for a, _ in traindata])
+        targets = torch.cat([b for _, b in traindata])
+        inputs = inputs.to(device)
+        targets = targets.to(device)
+        return inputs, targets
 
 
 def get_some_data_grasp(train_dataloader, num_classes, samples_per_class, device):

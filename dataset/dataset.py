@@ -26,7 +26,7 @@ def get_dataloaders(train_batch_size, test_batch_size, dataset, num_workers, res
     if dataset == "TIMIT":
         dataloaders = get_ASR_dataloaders('timit_dataset', batch_size=train_batch_size)
         # TODO:get a available data_loader
-        return dataloaders
+        return dataloaders[1],dataloaders[3]
 
     if 'ImageNet16' in dataset:
         mean = [x / 255 for x in [122.68, 116.66, 104.01]]

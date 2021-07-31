@@ -23,7 +23,7 @@ from ..p_utils import get_layer_metric_array
 
 
 @measure('grad_norm', bn=True)
-def get_grad_norm_arr(net, inputs, targets, loss_fn, split_data=1, skip_grad=False):
+def get_grad_norm_arr(net, inputs, targets, loss_fn, inputs_len, targets_len, dataset,split_data=1,skip_grad=False):
     net.zero_grad()
     N = inputs.shape[0]
     for sp in range(split_data):
@@ -31,7 +31,12 @@ def get_grad_norm_arr(net, inputs, targets, loss_fn, split_data=1, skip_grad=Fal
         en = (sp + 1) * N // split_data
 
         outputs = net.forward(inputs[st:en])
-        loss = loss_fn(outputs, targets[st:en])
+        if dataset =='timit':
+            outputs = F.softmax(outputs,dim=2)
+            outputs_len = inputs_len // 4
+            loss = loss_fn(outputs, outputs_len, targets, targets_len)
+        else:
+            loss = loss_fn(outputs, targets[st:en])
         loss.backward()
 
         grad_norm_arr = get_layer_metric_array(net, lambda

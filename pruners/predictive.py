@@ -37,7 +37,7 @@ def copynet(self, bn):
     return net
 
 
-def find_measures_arrays(net_orig, trainloader, dataload_info, device, measure_names=None, loss_fn=F.cross_entropy):
+def find_measures_arrays(net_orig, trainloader, dataload_info, device, measure_names=None, loss_fn=F.cross_entropy, dataset='cifar10'):
     if measure_names is None:
         measure_names = measures.available_measures
 
@@ -52,8 +52,12 @@ def find_measures_arrays(net_orig, trainloader, dataload_info, device, measure_n
     torch.cuda.empty_cache()
 
     # given 1 minibatch of data
+    inputs_len,targets_len = None, None
     if dataload == 'random':
-        inputs, targets = get_some_data(trainloader, num_batches=num_imgs_or_batches, device=device)
+        if dataset == 'timit':
+            inputs, targets, inputs_len,targets_len = get_some_data(trainloader, num_batches=num_imgs_or_batches, device=device, dataset='timit')
+        else:
+            inputs, targets = get_some_data(trainloader, num_batches=num_imgs_or_batches, device=device, dataset='cifar10')
     elif dataload == 'grasp':
         inputs, targets = get_some_data_grasp(trainloader, num_classes, samples_per_class=num_imgs_or_batches,
                                               device=device)
@@ -68,7 +72,7 @@ def find_measures_arrays(net_orig, trainloader, dataload_info, device, measure_n
             for measure_name in measure_names:
                 if measure_name not in measure_values:
                     val = measures.calc_measure(measure_name, net_orig, device, inputs, targets, loss_fn=loss_fn,
-                                                split_data=ds)
+                                                split_data=ds, inputs_len=inputs_len,targets_len= targets_len, dataset= dataset)
                     measure_values[measure_name] = val
 
             done = True
@@ -97,7 +101,8 @@ def find_measures(net_orig,  # neural network
                   loss_fn=F.cross_entropy,  # loss function to use within the zero-cost metrics
                   measure_names=None,
                   # an array of measure names to compute, if left blank, all measures are computed by default
-                  measures_arr=None):  # [not used] if the measures are already computed but need to be summarized, pass them here
+                  measures_arr=None,
+                  dataset = 'cifar10'):  # [not used] if the measures are already computed but need to be summarized, pass them here
 
     # Given a neural net
     # and some information about the input data (dataloader)
@@ -112,7 +117,7 @@ def find_measures(net_orig,  # neural network
 
     if measures_arr is None:
         measures_arr = find_measures_arrays(net_orig, dataloader, dataload_info, device, loss_fn=loss_fn,
-                                            measure_names=measure_names)
+                                            measure_names=measure_names, dataset=dataset)
 
     measures = {}
     for k, v in measures_arr.items():
